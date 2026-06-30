@@ -1,0 +1,19 @@
+# Render Blueprint — deploys OrbitView as an always-on web service.
+# Render auto-detects this file when you create a Blueprint from the repo.
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: orbitview
+    runtime: python
+    plan: free                # free instances sleep after ~15 min idle, wake on request
+    region: oregon
+    buildCommand: pip install -e .
+    # Render injects $PORT; bind 0.0.0.0 so the service is reachable.
+    startCommand: uvicorn iss_tracker.server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.6"
+      # Keep Skyfield's ephemeris + texture cache on the writable ephemeral disk.
+      - key: ISS_TRACKER_CACHE_DIR
+        value: /tmp/orbitview-cache
+    healthCheckPath: /api/catalog
