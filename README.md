@@ -1,4 +1,4 @@
-# Orbital Track — live 3D satellite tracker
+# OrbitView — live 3D satellite tracker
 
 A browser-based satellite tracker with an interactive 3D globe. Watch the ISS
 (or any satellite) orbit in real time over a NASA Blue Marble Earth, read live
@@ -10,7 +10,7 @@ through [Skyfield](https://rhodesmill.org/skyfield/), served by a small FastAPI
 backend. The front end is a single page built on
 [globe.gl](https://github.com/vasturiano/globe.gl) — no build step required.
 
-![Orbital Track](https://img.shields.io/badge/python-3.11%2B-blue) ![License](https://img.shields.io/badge/status-1.0-brightgreen)
+![OrbitView](https://img.shields.io/badge/python-3.11%2B-blue) ![License](https://img.shields.io/badge/status-1.0-brightgreen)
 
 ## Features
 
