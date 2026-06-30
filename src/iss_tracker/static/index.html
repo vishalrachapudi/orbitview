@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ISS Tracker · Live 3D Orbit</title>
+  <link rel="preconnect" href="https://esm.sh" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://esm.sh/three@0.181.0",
+      "three/": "https://esm.sh/three@0.181.0/",
+      "globe.gl": "https://esm.sh/globe.gl@2.34.4?external=three"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="stars" aria-hidden="true"></div>
+  <div id="globe"></div>
+  <canvas id="map2d" class="map2d hidden"></canvas>
+  <button id="view-toggle" class="view-toggle" title="Switch between 3D globe and 2D map">▦ 2D Map</button>
+  <button id="tz-toggle" class="view-toggle" title="Toggle between local time and UTC" style="right: 60px;">🕐 Local</button>
+
+  <!-- Brand / header -->
+  <header class="brand">
+    <div class="brand-mark">
+      <span class="dot"></span>
+      <div>
+        <h1>ORBITAL<span>·</span>TRACK</h1>
+        <p id="brand-sub">Live satellite tracking</p>
+      </div>
+    </div>
+    <div class="clock">
+      <span id="utc-clock">––:––:––</span>
+      <small>UTC</small>
+    </div>
+  </header>
+
+  <!-- Left: satellite selection + tracked list + telemetry -->
+  <aside class="panel panel-left">
+    <section class="card">
+      <h2>Track a satellite</h2>
+      <div class="sat-select">
+        <select id="sat-picker" aria-label="Add a satellite">
+          <option value="" disabled selected>＋ Add from catalog…</option>
+        </select>
+      </div>
+      <div class="sat-search">
+        <input id="sat-search" type="text" autocomplete="off" spellcheck="false"
+               placeholder="🔍 Search 15,000+ satellites or NORAD ID…" />
+        <ul id="search-results" class="search-results hidden"></ul>
+      </div>
+      <div class="sat-select">
+        <select id="const-picker" aria-label="Add a constellation">
+          <option value="" disabled selected>✦ Add a constellation…</option>
+        </select>
+      </div>
+      <div class="sat-search">
+        <input id="const-search" type="text" autocomplete="off" spellcheck="false"
+               placeholder="🔭 Search any operator or name… (Enter)" />
+      </div>
+      <ul id="tracked-list" class="tracked-list"></ul>
+      <ul id="const-list" class="tracked-list"></ul>
+    </section>
+
+    <section class="card telemetry">
+      <h2>Telemetry · <span id="tele-name">—</span></h2>
+      <div class="readout">
+        <div class="metric"><label>Latitude</label><span id="m-lat">—</span></div>
+        <div class="metric"><label>Longitude</label><span id="m-lng">—</span></div>
+        <div class="metric"><label>Altitude</label><span id="m-alt">—</span></div>
+        <div class="metric"><label>Speed</label><span id="m-speed">—</span></div>
+        <div class="metric"><label>Period</label><span id="m-period">—</span></div>
+        <div class="metric"><label>Inclination</label><span id="m-incl">—</span></div>
+      </div>
+      <div class="badges">
+        <span id="b-sunlit" class="badge">—</span>
+        <span id="b-tle" class="badge subtle">TLE —</span>
+      </div>
+      <div class="eclipse-strip">
+        <span id="e-beta" class="badge subtle">β —</span>
+        <span id="e-frac" class="badge subtle">Sunlit —</span>
+        <span id="e-next" class="badge subtle">Eclipse —</span>
+      </div>
+      <details class="orbital-elements">
+        <summary>Orbital elements</summary>
+        <div class="readout">
+          <div class="metric"><label>Semi-major axis</label><span id="el-sma">—</span></div>
+          <div class="metric"><label>Eccentricity</label><span id="el-ecc">—</span></div>
+          <div class="metric"><label>RAAN</label><span id="el-raan">—</span></div>
+          <div class="metric"><label>Arg. perigee</label><span id="el-argp">—</span></div>
+          <div class="metric"><label>True anomaly</label><span id="el-nu">—</span></div>
+          <div class="metric"><label>Mean anomaly</label><span id="el-ma">—</span></div>
+          <div class="metric"><label>Apogee alt</label><span id="el-apo">—</span></div>
+          <div class="metric"><label>Perigee alt</label><span id="el-per">—</span></div>
+          <div class="metric"><label>Rev number</label><span id="el-rev">—</span></div>
+        </div>
+      </details>
+      <p id="sat-blurb" class="blurb"></p>
+    </section>
+  </aside>
+
+  <!-- Right: observer location + passes + alerts -->
+  <aside class="panel panel-right">
+    <section class="card">
+      <div class="card-head">
+        <h2>Your location</h2>
+        <button id="locate-btn" class="ghost" title="Use my location">◎ Locate</button>
+      </div>
+      <form id="loc-form" class="loc-form">
+        <label>Lat<input id="loc-lat" type="number" step="any" placeholder="e.g. 37.77" /></label>
+        <label>Lon<input id="loc-lon" type="number" step="any" placeholder="e.g. -122.42" /></label>
+        <button type="submit">Set</button>
+      </form>
+      <p id="loc-status" class="hint">Set a location to predict visible passes.</p>
+    </section>
+
+    <section class="card passes">
+      <div class="card-head">
+        <div class="tabs">
+          <button class="tab active" data-tab="passes">Passes</button>
+          <button class="tab" data-tab="contacts">Contacts</button>
+          <button class="tab" data-tab="target">Target</button>
+          <button class="tab" data-tab="timeline">Timeline</button>
+        </div>
+        <label class="switch" title="Notify me before a pass">
+          <input id="alerts-toggle" type="checkbox" />
+          <span class="slider"></span>
+          <em>Alerts</em>
+        </label>
+      </div>
+
+      <div id="tab-passes" class="tab-pane">
+        <ul id="pass-list" class="pass-list">
+          <li class="pass-empty">No location set yet.</li>
+        </ul>
+      </div>
+
+      <div id="tab-contacts" class="tab-pane hidden">
+        <div id="station-net" class="station-net"></div>
+        <label class="contact-freq">Downlink
+          <input id="contact-freq" type="number" value="2250" min="1" step="1" /> MHz</label>
+        <ul id="contact-list" class="contact-list">
+          <li class="pass-empty">Select ground stations above.</li>
+        </ul>
+      </div>
+
+      <div id="tab-target" class="tab-pane hidden">
+        <form id="target-form" class="loc-form">
+          <label>Lat<input id="tgt-lat" type="number" step="any" placeholder="e.g. 48.85" /></label>
+          <label>Lon<input id="tgt-lon" type="number" step="any" placeholder="e.g. 2.35" /></label>
+          <button type="submit">Set</button>
+        </form>
+        <div class="target-opts">
+          <button id="tgt-pick" class="ghost" type="button">⊕ Pick on globe</button>
+          <label>Max off-nadir
+            <input id="tgt-offnadir" type="number" value="45" min="0" max="85" />°</label>
+        </div>
+        <ul id="access-list" class="pass-list">
+          <li class="pass-empty">Set a target to compute access windows.</li>
+        </ul>
+      </div>
+
+      <div id="tab-timeline" class="tab-pane hidden">
+        <div class="tl-actions">
+          <button id="tl-csv" class="ghost" type="button">⤓ CSV</button>
+          <button id="tl-ics" class="ghost" type="button">⤓ iCal</button>
+        </div>
+        <ul id="event-list" class="pass-list">
+          <li class="pass-empty">Track a satellite to build the timeline.</li>
+        </ul>
+      </div>
+    </section>
+  </aside>
+
+  <!-- Contact detail: az/el polar plot + Doppler -->
+  <div id="contact-detail" class="contact-detail hidden">
+    <div class="cd-head">
+      <strong id="cd-title">Contact</strong>
+      <button id="cd-close" aria-label="Close">✕</button>
+    </div>
+    <div id="cd-polar" class="cd-polar"></div>
+    <div id="cd-meta" class="cd-meta"></div>
+    <div id="cd-doppler" class="cd-doppler"></div>
+  </div>
+
+  <!-- Imminent-pass alert banner -->
+  <div id="alert-banner" class="alert-banner hidden" role="status">
+    <span class="alert-icon">🛰️</span>
+    <div class="alert-text"><strong id="alert-title">Pass incoming</strong>
+      <span id="alert-sub"></span></div>
+    <button id="alert-dismiss" aria-label="Dismiss">✕</button>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <span><i class="swatch solid"></i>Travelled</span>
+    <span><i class="swatch dashed"></i>Predicted</span>
+    <span><i class="swatch sun"></i>Sun · real city lights at night</span>
+  </div>
+
+  <!-- Time machine transport bar -->
+  <div id="transport" class="transport hidden">
+    <button id="t-live" class="t-live active" title="Return to live">● LIVE</button>
+    <button id="t-play" class="t-btn" title="Play / pause">▶</button>
+    <div class="t-rate">
+      <button data-rate="1" class="active">1×</button>
+      <button data-rate="10">10×</button>
+      <button data-rate="60">60×</button>
+      <button data-rate="600">600×</button>
+    </div>
+    <button id="t-orbit-back" class="t-btn" title="Back one orbit">⟲ orbit</button>
+    <button id="t-orbit-fwd" class="t-btn" title="Forward one orbit">orbit ⟳</button>
+    <button id="t-next-event" class="t-btn" title="Jump to next event">⤓ next event</button>
+    <div class="t-scrub">
+      <div id="t-ticks" class="t-ticks" aria-hidden="true"></div>
+      <input id="t-range" class="t-range" type="range" min="0" max="1000" value="200"
+             aria-label="Time scrubber" />
+    </div>
+    <span id="t-readout" class="t-readout">—</span>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
