@@ -1,4 +1,4 @@
-"""ISS Tracker — a live 3D satellite tracker with a FastAPI + Skyfield backend."""
+"""OrbitView — a live 3D satellite tracker with a FastAPI + Skyfield backend."""
 
 from __future__ import annotations
 

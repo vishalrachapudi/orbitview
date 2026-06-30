@@ -2,7 +2,7 @@ import Globe from "globe.gl";
 import * as THREE from "three";
 
 /* ============================================================================
- * ISS Tracker — front-end controller
+ * OrbitView — front-end controller
  *
  * The FastAPI backend (Skyfield) is the source of truth: it serves each
  * satellite's ground track sampled every few seconds, plus orbital params, the

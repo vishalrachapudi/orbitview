@@ -15,7 +15,7 @@ from .tle import TleError
 
 STATIC_DIR = Path(__file__).parent / "static"
 
-app = FastAPI(title="ISS Tracker", version="1.0.0")
+app = FastAPI(title="OrbitView", version="1.0.0")
 
 
 @app.get("/api/catalog")
