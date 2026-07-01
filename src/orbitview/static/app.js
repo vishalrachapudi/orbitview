@@ -23,7 +23,7 @@ const SCRUB_FWD_HOURS = 24;    // ...and this far into the future
 // Scene scale: globe.gl uses a globe radius of 100 units.
 const SUN_DISTANCE = 2300;
 const SUN_RADIUS = 120;
-const SUN_GLOW = 820;
+const SUN_GLOW = 480;
 const SKY_RADIUS = 9000;   // Milky Way sphere, well beyond the Sun, inside camera far
 
 const PALETTE = ["#38e8ff", "#ffce5a", "#54e6a0", "#c792ff", "#ff8d6b", "#6ab7ff", "#ff5d97", "#9be15d"];
@@ -291,10 +291,11 @@ function initGlobe() {
   // drift off the globe and out toward the Sun, after which rotation just
   // circles empty space — the "camera stuck on the Sun" bug.
   controls.enablePan = false;
-  // Clamp zoom so you can never dolly out to the Sun (at SUN_DISTANCE) or
-  // inside the globe surface (radius 100).
+  // Clamp zoom so the globe always stays the dominant object on screen. Past
+  // ~750 units the globe shrinks to a speck while the Sun's glow keeps filling
+  // the view — the "camera stuck on the Sun" bug. 800 still frames high orbits.
   controls.minDistance = 110;
-  controls.maxDistance = 1800;
+  controls.maxDistance = 800;
   controls.addEventListener("start", () => { controls.autoRotate = false; });
 
   // Click a constellation dot on the globe → track that satellite.
