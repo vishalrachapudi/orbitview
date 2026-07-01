@@ -8,7 +8,7 @@ from pathlib import Path
 # --- Caching -----------------------------------------------------------------
 
 CACHE_DIR = Path(
-    os.environ.get("ISS_TRACKER_CACHE_DIR", Path.home() / ".cache" / "iss-tracker")
+    os.environ.get("ORBITVIEW_CACHE_DIR", Path.home() / ".cache" / "orbitview")
 )
 
 # How long a cached TLE is considered fresh before we re-download it.
@@ -50,7 +50,7 @@ EARTH_DISPLAY_WIDTH = 4096
 # and visible-pass classification). Downloaded once, ~16 MB, then cached.
 EPHEMERIS_NAME = "de421.bsp"
 
-USER_AGENT = "iss-tracker/1.0 (+https://github.com/local/iss-tracker)"
+USER_AGENT = "orbitview/1.0 (+https://github.com/vishalrachapudi/orbitview)"
 
 # --- Networking timeouts -----------------------------------------------------
 

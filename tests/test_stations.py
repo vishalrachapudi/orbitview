@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from iss_tracker.stations import STATIONS, STATIONS_BY_ID, stations_as_dicts
+from orbitview.stations import STATIONS, STATIONS_BY_ID, stations_as_dicts
 
 
 def test_station_ids_unique():

@@ -62,13 +62,13 @@ backend. The front end is a single page built on
 - Python 3.11+
 - Network access on first run (downloads TLEs from CelesTrak, the Blue Marble
   texture, and the `de421` ephemeris ~16 MB for Sun geometry). Everything is
-  cached under `~/.cache/iss-tracker` and reused thereafter.
+  cached under `~/.cache/orbitview` and reused thereafter.
 - A modern browser with WebGL.
 
 ## Setup
 
 ```bash
-cd ~/Projects/iss-tracker
+cd ~/Projects/orbitview
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
@@ -77,23 +77,23 @@ pip install -e .
 ## Run
 
 ```bash
-iss-tracker            # serve on http://127.0.0.1:8000 and open the browser
+orbitview            # serve on http://127.0.0.1:8000 and open the browser
 # or
-python -m iss_tracker
+python -m orbitview
 ```
 
 Options:
 
 ```bash
-python -m iss_tracker --port 9000     # choose a port
-python -m iss_tracker --no-open       # serve only, don't open a browser
-python -m iss_tracker --host 0.0.0.0  # expose on the local network
-python -m iss_tracker --reload        # auto-reload for development
+python -m orbitview --port 9000     # choose a port
+python -m orbitview --no-open       # serve only, don't open a browser
+python -m orbitview --host 0.0.0.0  # expose on the local network
+python -m orbitview --reload        # auto-reload for development
 ```
 
 ## How it works
 
-The backend (`src/iss_tracker/`) is the source of truth for all astronomy:
+The backend (`src/orbitview/`) is the source of truth for all astronomy:
 
 | Module | Responsibility |
 | --- | --- |
@@ -146,9 +146,9 @@ ruff check src tests
 ## Legacy desktop viewer
 
 The original matplotlib/tkinter desktop version lives in
-[`legacy/iss_tracker_desktop.py`](legacy/iss_tracker_desktop.py). To run it:
+[`legacy/orbitview_desktop.py`](legacy/orbitview_desktop.py). To run it:
 
 ```bash
 pip install -e ".[desktop]"
-python legacy/iss_tracker_desktop.py
+python legacy/orbitview_desktop.py
 ```

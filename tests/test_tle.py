@@ -6,7 +6,7 @@ import time
 
 import pytest
 
-from iss_tracker import tle
+from orbitview import tle
 
 ISS_TLE = """ISS (ZARYA)
 1 25544U 98067A   24001.50000000  .00016717  00000-0  10270-3 0  9000
@@ -45,7 +45,7 @@ def test_parse_rejects_truncated():
 
 def test_get_tle_uses_cache(tmp_path, monkeypatch):
     """A fresh cache file is read without hitting the network."""
-    from iss_tracker import config
+    from orbitview import config
 
     monkeypatch.setattr(config, "CACHE_DIR", tmp_path)
     cache_file = tmp_path / "tle" / "25544.tle"
@@ -61,7 +61,7 @@ def test_get_tle_uses_cache(tmp_path, monkeypatch):
 
 
 def test_get_tle_falls_back_to_stale_cache_on_network_error(tmp_path, monkeypatch):
-    from iss_tracker import config
+    from orbitview import config
 
     monkeypatch.setattr(config, "CACHE_DIR", tmp_path)
     cache_file = tmp_path / "tle" / "25544.tle"

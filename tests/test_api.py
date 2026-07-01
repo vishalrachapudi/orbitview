@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from iss_tracker import propagation, server
+from orbitview import propagation, server
 
 
 @pytest.fixture
@@ -173,7 +173,7 @@ def test_events_endpoint(client):
 
 
 def test_search_endpoint(client, monkeypatch):
-    from iss_tracker import satcat
+    from orbitview import satcat
     monkeypatch.setattr(
         satcat, "search",
         lambda q, limit=50: {
@@ -192,7 +192,7 @@ def test_constellations_list_endpoint(client):
 
 
 def test_constellation_positions_endpoint(client, monkeypatch):
-    from iss_tracker import constellations
+    from orbitview import constellations
     monkeypatch.setattr(
         constellations, "positions",
         lambda cid, **kw: {
@@ -210,4 +210,4 @@ def test_constellation_positions_endpoint(client, monkeypatch):
 def test_index_html_served(client):
     res = client.get("/")
     assert res.status_code == 200
-    assert "ORBITAL" in res.text
+    assert "ORBIT" in res.text

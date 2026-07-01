@@ -38,7 +38,7 @@ EARTH_IMAGE_URLS = (
     "https://raw.githubusercontent.com/turban/webgl-earth/master/images/"
     "2_no_clouds_4k.jpg",
 )
-DEFAULT_CACHE_DIR = Path.home() / ".cache" / "iss-tracker"
+DEFAULT_CACHE_DIR = Path.home() / ".cache" / "orbitview"
 DEFAULT_HOURS_EACH_WAY = 6.0
 MIN_HOURS_EACH_WAY = 1.0
 MAX_HOURS_EACH_WAY = 168.0  # 7 days each way
@@ -143,7 +143,7 @@ def download_file(url: str, destination: Path) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "iss-tracker/0.2 (+local earth imagery cache)"},
+        headers={"User-Agent": "orbitview/0.2 (+local earth imagery cache)"},
     )
     with urllib.request.urlopen(request, timeout=120) as response:
         destination.write_bytes(response.read())

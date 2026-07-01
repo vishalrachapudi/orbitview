@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from iss_tracker import constellations
+from orbitview import constellations
 
 L1 = "1 25544U 98067A   24160.50000000  .00016717  00000-0  10270-3 0  9007"
 L2 = "2 25544  51.6400 208.0000 0006703 130.0000 325.0000 15.50000000    05"

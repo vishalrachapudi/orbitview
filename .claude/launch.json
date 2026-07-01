@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "iss-tracker",
-      "runtimeExecutable": "/Users/vishal/Projects/iss-tracker/.venv/bin/python",
-      "runtimeArgs": ["-m", "iss_tracker", "--no-open", "--port", "8770"],
+      "name": "orbitview",
+      "runtimeExecutable": "/Users/vishal/Projects/orbitview/.venv/bin/python",
+      "runtimeArgs": ["-m", "orbitview", "--no-open", "--port", "8770"],
       "port": 8770
     }
   ]

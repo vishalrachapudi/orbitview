@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from iss_tracker import satcat
+from orbitview import satcat
 
 INDEX = [
     {"norad_id": 25544, "name": "ISS (ZARYA)", "intl_id": "1998-067A"},

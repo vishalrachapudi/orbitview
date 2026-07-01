@@ -1,7 +1,7 @@
 """Launch the OrbitView web app and open it in a browser.
 
-    python -m iss_tracker            # serve and open the browser
-    python -m iss_tracker --no-open  # serve only (for headless/remote use)
+    python -m orbitview            # serve and open the browser
+    python -m orbitview --no-open  # serve only (for headless/remote use)
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ def main() -> int:
 
     print(f"\n  OrbitView → {url}\n  Press Ctrl+C to stop.\n")
     uvicorn.run(
-        "iss_tracker.server:app",
+        "orbitview.server:app",
         host=args.host,
         port=args.port,
         reload=args.reload,

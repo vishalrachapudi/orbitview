@@ -6,8 +6,8 @@ import time
 
 import pytest
 
-from iss_tracker import propagation, tle
-from iss_tracker.stations import GroundStation
+from orbitview import propagation, tle
+from orbitview.stations import GroundStation
 
 # A mid-latitude station that reliably sees the ISS (incl 51.6°) within a day.
 TEST_STATION = GroundStation("test", "Test Station", 40.0, -75.0, 0.0, 5.0, "Test")
