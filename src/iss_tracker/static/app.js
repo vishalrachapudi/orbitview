@@ -287,6 +287,14 @@ function initGlobe() {
   controls.autoRotate = true;
   controls.autoRotateSpeed = 0.18;
   controls.enableDamping = true;
+  // Keep the orbit target pinned to the globe centre. Panning lets the target
+  // drift off the globe and out toward the Sun, after which rotation just
+  // circles empty space — the "camera stuck on the Sun" bug.
+  controls.enablePan = false;
+  // Clamp zoom so you can never dolly out to the Sun (at SUN_DISTANCE) or
+  // inside the globe surface (radius 100).
+  controls.minDistance = 110;
+  controls.maxDistance = 1800;
   controls.addEventListener("start", () => { controls.autoRotate = false; });
 
   // Click a constellation dot on the globe → track that satellite.
