@@ -122,17 +122,18 @@ html, body {
   pointer-events: none;
 }
 .brand-mark { display: flex; align-items: center; gap: 12px; pointer-events: auto; }
-.brand-mark .dot {
-  width: 12px; height: 12px; border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 0 4px rgba(56,232,255,0.18), 0 0 18px var(--cyan);
-  animation: pulse 2.4s ease-in-out infinite;
+.brand-mark .logo {
+  display: inline-flex;
+  color: var(--cyan);
+  filter: drop-shadow(0 0 6px rgba(56,232,255,0.55));
+  animation: logoGlow 3s ease-in-out infinite;
 }
+@keyframes logoGlow { 50% { filter: drop-shadow(0 0 11px rgba(56,232,255,0.9)); } }
 @keyframes pulse { 50% { box-shadow: 0 0 0 8px rgba(56,232,255,0.05), 0 0 26px var(--cyan); } }
 .brand h1 {
-  margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.14em;
+  margin: 0; font-size: 20px; font-weight: 800; letter-spacing: 0.01em;
 }
-.brand h1 span { color: var(--cyan); margin: 0 2px; }
+.brand h1 span { color: var(--cyan); }
 .brand p { margin: 2px 0 0; font-size: 11px; color: var(--ink-dim); letter-spacing: 0.05em; }
 .clock {
   pointer-events: auto;
